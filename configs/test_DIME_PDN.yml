@@ -40,17 +40,7 @@ network_G:
 #### path
 path:
   root: ./outputs/DIME_PDN
-#  pretrain_model_G: /rusers/liuj/Code/Workspace/LibVidExCr/outputs/DIME_PDN/expr/DIME_PDN_240403-154603/models/715000_G.pth
-#  pretrain_model_G: /rusers/liuj/Code/Workspace/LibVidExCr/outputs/DIME_PDN/expr/DIME_PDN_240403-154603/models/740000_G.pth
-  pretrain_model_G: /rusers/liuj/Code/Workspace/LibVidExCr/outputs/DIME_PDN/expr/DIME_PDN_240403-154603/models/0_bestavg_psnr.pth
+  pretrain_model_G: ~
 
-# 24-04-09 06:29:41.849 - INFO: Previous best AVG-PSNR: 20.1055  AVG-step: 715000
-# 24-04-09 06:29:41.849 - INFO: Previous best AVG-SSIM: 0.9016  AVG-step: 740000
-# best:
-# 24-07-17 20:27:41.489 - INFO: # Test # PSNR-over: 20.4511:
-#24-07-17 20:27:41.489 - INFO: # Test # PSNR-under: 22.6727:
-#24-07-17 20:27:41.489 - INFO: # Test # SSIM-over: 0.9157:
-#24-07-17 20:27:41.489 - INFO: # Test # SSIM-under: 0.9112:
-# PSNR: 21.56190834423716, SSIM: 0.9134617947147936
 
 
