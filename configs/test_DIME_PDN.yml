@@ -1,0 +1,56 @@
+### must be same as
+name: DIME_PDN
+suffix: ~  # add suffix to saved images
+model: video_dlan
+distortion: LLE
+scale: 1
+crop_border: ~  # crop border when evaluation. If None(~), crop the scale pixels
+gpu_ids: [2]
+
+datasets:
+  test:
+    name: DIME
+    mode: VEC_test
+    dataroot_GT: ~/Data/DIME/np/test/GT
+    dataroot_LQ: ~/Data/DIME/np/test/LQ
+    train_size: [256, 256] # [256, 480] #  [480, 256] # [960, 512]  [256, 256]
+    cache_data: true
+    N_frames: 5
+    padding: new_info
+    batch_size: 1
+    read_all: false  # false true
+
+#### network structures
+network_G:
+  which_model_G: BaselinePDN
+  lldm_config: configs/lldm/lldm.yaml
+  vae_config: configs/vqvae/vqgan.yaml
+  unet_config: configs/unet/unet.yaml
+  lldm_ckpt: ./pretrained/lldm/e200.pt
+  frozen_lldm: False
+  down_blocks: 2
+  nframes: 5
+  width: 16
+  middle_blk_num: 1
+  enc_blk_nums: [1, 1, 1, 28]
+  dec_blk_nums: [1, 1, 1, 1]
+  dw_expand: 1
+  ffn_expand: 2
+
+#### path
+path:
+  root: ./outputs/DIME_PDN
+#  pretrain_model_G: /rusers/liuj/Code/Workspace/LibVidExCr/outputs/DIME_PDN/expr/DIME_PDN_240403-154603/models/715000_G.pth
+#  pretrain_model_G: /rusers/liuj/Code/Workspace/LibVidExCr/outputs/DIME_PDN/expr/DIME_PDN_240403-154603/models/740000_G.pth
+  pretrain_model_G: /rusers/liuj/Code/Workspace/LibVidExCr/outputs/DIME_PDN/expr/DIME_PDN_240403-154603/models/0_bestavg_psnr.pth
+
+# 24-04-09 06:29:41.849 - INFO: Previous best AVG-PSNR: 20.1055  AVG-step: 715000
+# 24-04-09 06:29:41.849 - INFO: Previous best AVG-SSIM: 0.9016  AVG-step: 740000
+# best:
+# 24-07-17 20:27:41.489 - INFO: # Test # PSNR-over: 20.4511:
+#24-07-17 20:27:41.489 - INFO: # Test # PSNR-under: 22.6727:
+#24-07-17 20:27:41.489 - INFO: # Test # SSIM-over: 0.9157:
+#24-07-17 20:27:41.489 - INFO: # Test # SSIM-under: 0.9112:
+# PSNR: 21.56190834423716, SSIM: 0.9134617947147936
+
+

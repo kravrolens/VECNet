@@ -1,0 +1,1 @@
+python test.py -opt configs/test_DIME_PDN.yml

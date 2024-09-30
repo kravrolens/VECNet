@@ -1,0 +1,115 @@
+#### general settings
+name: DIME_PDN
+use_tb_logger: true
+model: video_dlan  # do not change training strategy
+distortion: LLE
+scale: 1
+gpu_ids: [1]
+
+#### datasets
+datasets:
+  train:
+    name: DIME   # see Dynamic scenes In Mixed (Multiple) Exposure
+    mode: VEC_train
+    interval_list: [1]
+    random_reverse: false
+    border_mode: false
+    dataroot_GT: ~/Data/DIME/np/train/GT
+    dataroot_LQ: ~/Data/DIME/np/train/LQ
+    train_size: [960, 512]   # [960, 512] or [512, 512]
+    cache_data: true
+    padding: new_info
+    read_all: false  # false true
+
+    N_frames: 5     # how many frames as an input.
+    use_shuffle: true
+    n_workers: 8  # per GPU
+    batch_size: 8
+    GT_size: 256     # size you want to crop out as input sample.
+    LQ_size: 256
+    use_flip: true
+    use_rot: true
+    color: RGB
+  val:
+    name: DIME
+    mode: VEC_val
+    dataroot_GT: ~/Data/DIME/np/test/GT
+    dataroot_LQ: ~/Data/DIME/np/test/LQ
+    cache_data: true
+    N_frames: 5
+    padding: new_info
+    train_size: [256, 256]  # [960, 512]
+    batch_size: 4
+    read_all: false  # false true
+  test:
+    name: DIME
+    mode: VEC_test
+    dataroot_GT: ~/Data/DIME/np/test/GT
+    dataroot_LQ: ~/Data/DIME/np/test/LQ
+    train_size: [960, 512] # [256, 256] [960, 512]
+    cache_data: true
+    N_frames: 5
+    padding: new_info
+    batch_size: 1
+    read_all: false  # false true
+
+#### network structures
+network_G:
+  which_model_G: BaselinePDN
+  lldm_config: configs/lldm/lldm.yaml
+  vae_config: configs/vqvae/vqgan.yaml
+  unet_config: configs/unet/unet.yaml
+  lldm_ckpt: ./pretrained/lldm/e200.pt
+  frozen_lldm: False
+  down_blocks: 2
+  nframes: 5
+  width: 16
+  middle_blk_num: 1
+  enc_blk_nums: [1, 1, 1, 28]
+  dec_blk_nums: [1, 1, 1, 1]
+  dw_expand: 1
+  ffn_expand: 2
+
+#### path
+path:
+  root: ./outputs/DIME_PDN
+  strict_load: false
+  #  pretrain_model_G: ~
+  resume_state: ~
+#  pretrain_model_G: ./outputs/DIME_PDN/expr/DIME_PDN_240316-191720/models/0_bestavg_psnr.pth
+#  resume_state: ./outputs/DIME_PDN/expr/DIME_PDN_240316-191720/training_state/400000.state
+
+#### training settings: learning rate scheme, loss
+train:
+  lr_G: !!float 4e-4  # 1e-3  # too big
+  lr_scheme: CosineAnnealingLR_Restart
+  beta1: 0.9
+  beta2: 0.99
+  niter: 800000 # 400000  # maybe more
+  ft_tsa_only: 0
+  warmup_iter: -1  # -1: no warm up
+#  T_period: [400000]
+#  restarts: [400000]
+  T_period: [200000, 400000, 600000]
+  restarts: [600000]
+
+  restart_weights: [1]
+  eta_min: !!float 1e-7
+  weight_decay_G: !!float 1e-3
+
+#  pixel_criterion: cb
+  pixel_criterion: cb+ssim
+  pixel_weight: 1.0
+  reflectance_weight: 1.0
+  fft_weight: !!float 1e-3
+  tv_weight: !!float 1e5
+  val_freq: !!float 5e3 # 5e3 1e3
+
+  manual.resize960x512_seed: 0
+  manual_seed: 3407
+
+#### logger
+logger:
+  print_freq: 100
+  save_checkpoint_freq: !!float 2500 # 1000 # 5000
+
