@@ -76,8 +76,6 @@ path:
   strict_load: false
   #  pretrain_model_G: ~
   resume_state: ~
-#  pretrain_model_G: ./outputs/DIME_PDN/expr/DIME_PDN_240316-191720/models/0_bestavg_psnr.pth
-#  resume_state: ./outputs/DIME_PDN/expr/DIME_PDN_240316-191720/training_state/400000.state
 
 #### training settings: learning rate scheme, loss
 train:
