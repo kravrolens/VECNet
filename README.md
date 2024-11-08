@@ -33,22 +33,11 @@ bash scripts/train.sh
 ### Citation
 If you find this work useful for your research, please consider citing:
 ``` 
-@article{DBLP:journals/corr/abs-2402-17296,
-  author       = {Jin Liu and
-                  Bo Wang and
-                  Chuanming Wang and
-                  Huiyuan Fu and
-                  Huadong Ma},
-  title        = {Learning Exposure Correction in Dynamic Scenes},
-  journal      = {CoRR},
-  volume       = {abs/2402.17296},
-  year         = {2024},
-  url          = {https://doi.org/10.48550/arXiv.2402.17296},
-  doi          = {10.48550/ARXIV.2402.17296},
-  eprinttype    = {arXiv},
-  eprint       = {2402.17296},
-  timestamp    = {Mon, 25 Mar 2024 15:38:17 +0100},
-  biburl       = {https://dblp.org/rec/journals/corr/abs-2402-17296.bib},
-  bibsource    = {dblp computer science bibliography, https://dblp.org}
+@inproceedings{liu2024learning,
+  title={Learning Exposure Correction in Dynamic Scenes},
+  author={Liu, Jin and Wang, Bo and Wang, Chuanming and Fu, Huiyuan and Ma, Huadong},
+  booktitle={Proceedings of the 32nd ACM International Conference on Multimedia},
+  pages={3858--3866},
+  year={2024}
 }
 ```
