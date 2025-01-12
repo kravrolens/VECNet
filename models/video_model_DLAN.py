@@ -128,7 +128,6 @@ class VideoBaseModel(BaseModel):
             self.var_L)
         self.fake_H_noise, _, _, _, _, _ = self.netG(input)
 
-        # Strategy 1: # add Strategy to MM2024: ssim loss and SNE loss
         # cb+ssim loss
         l_pix = self.l_pix_w * self.cri_pix(self.fake_H, self.real_H)
         # tv loss
@@ -137,25 +136,7 @@ class VideoBaseModel(BaseModel):
         l_noise = self.l_pix_w * self.cri_pix(self.fake_H_noise, self.real_H)
 
         l_total = l_pix + l_tv + l_noise
-        # print("pixel:", l_pix.item(), " tv:", l_tv.item(), " noise:", l_noise.item())
-
-        # Strategy 2: illumination regularization loss
-
-        # Strategy 3: cause NAN loss
-        # reflectance_GT = self.netG(self.var_L, only_reflectance=True, single_frame=self.real_H).detach()
-        # self.fake_H, reflectance_LQ = self.netG(self.var_L, need_reflectance=True)
-        # l_pix = self.l_pix_w * self.cri_pix(self.fake_H, self.real_H)
-        # l_ref = self.lamda * self.cri_pix(reflectance_LQ, reflectance_GT)
-        # l_total = l_pix + l_ref
-        # print("pixel:", l_pix.item(), " ref:", l_ref.item())
-
-        # Strategy 4:
-        # l_pix = self.l_pix_w * self.cri_pix(self.fake_H, self.real_H)
-        # f_amp_delta, _ = self.fft_loss(self.fake_H, self.real_H)
-        # l_fft = self.l_fft_w * f_amp_delta
-        # l_total = l_pix + l_fft
-        # print("pixel:", l_pix.item(), " fft:", l_fft.item())
-
+        
         l_total.backward()
         self.optimizer_G.step()
 
@@ -166,18 +147,8 @@ class VideoBaseModel(BaseModel):
     def test(self):
         self.netG.eval()
         with (torch.no_grad()):
-            # time_start = time.time()
             self.fake_H, self.illu_map, self.illu_map_v, \
                 self.brighten, self.darken, self.aligned_frames = self.netG(self.var_L)
-            # time_end = time.time()
-            # print('totally cost', time_end - time_start)  # ~0.2s
-            # https://blog.csdn.net/weixin_41519463/article/details/102468868
-            # print(self.var_L.shape)  # torch.Size([1, 5, 3, 256, 480])
-            # flops, params = get_model_complexity_info(self.netG, (5, 3, 480, 256), as_strings=True,
-            #                                           print_per_layer_stat=True)
-            # print('Flops: ' + flops, ' Params: ' + params)
-            # Flops: 74.84 GMac  Params: 10.83 M
-            # ipdb.set_trace()
         self.netG.train()
 
     def test_visual(self):
@@ -201,12 +172,6 @@ class VideoBaseModel(BaseModel):
 
         out_dict['aligned_frames'] = [self.aligned_frames[i].detach()[0].float().cpu() for i in
                                       range(len(self.aligned_frames))]
-
-        # choose all images
-        # out_dict['LQ'] = self.var_L.detach().float().cpu()
-        # out_dict['rlt'] = self.fake_H.detach().float().cpu()
-        # if need_GT:
-        #     out_dict['GT'] = self.real_H.detach().float().cpu()
 
         if need_illu:
             out_dict['illu_map'] = self.illu_map.detach()[0].float().cpu()
